@@ -19,7 +19,7 @@ import random
 def get_args():
     parser = argparse.ArgumentParser(description='Pytorch Faster-rcnn Training')
 
-    parser.add_argument('--data_path', default='/public/yzy/coco/2017/', help='dataset path')
+    parser.add_argument('--root_path', default='/home/gbc/workspace/data/coco/', help='root path')
     parser.add_argument('--model', default='fasterrcnn_resnet50_fpn', help='model')
     parser.add_argument('--dataset', default='coco', help='dataset')
     parser.add_argument('--device', default='cuda', help='device')
@@ -49,7 +49,7 @@ def get_args():
         action="store_true",
     )
     parser.add_argument('--distributed', default=True, help='if distribute or not')
-    parser.add_argument('--parallel', default=False, help='if distribute or not')
+    parser.add_argument('--parallel', default=False, help='if parallel or not')
     # distributed training parameters
     parser.add_argument('--world-size', default=1, type=int,
                         help='number of distributed processes')
@@ -62,10 +62,10 @@ def get_args():
 
 def get_dataset(name, image_set, transform):
     paths = {
-        "coco": ('/public/yzy/coco/2017/', get_coco, 91),
+        "coco": ('/home/gbc/workspace/data/coco/', get_coco, 91),
         "coco_kp": ('/datasets01/COCO/022719/', get_coco_kp, 2)
     }
-    p, ds_fn, num_classes = paths[name]
+    p, ds_fn, num_classes = paths[name] # p应改为root
 
     ds = ds_fn(p, image_set=image_set, transforms=transform)
     return ds, num_classes
@@ -82,7 +82,7 @@ def get_transform(train):
 def main():
     args = get_args()
     if args.output_dir:
-        utils.mkdir(args.output_dir)    
+        utils.mkdir(args.output_dir)  # try：调用os创建output filefolder，error是已经存在不raise
     utils.init_distributed_mode(args)
 
     # Data loading

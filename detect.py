@@ -38,11 +38,11 @@ def main():
     print("Creating model")
     model = torchvision.models.detection.__dict__[args.model](num_classes=num_classes, pretrained=False)  
     model = model.cuda()
-
     model.eval()
 
-    save = torch.load(args.model_path)
+    save = torch.load(args.model_path)   # 上面的的model是创建的网络结构模型，这里的save是将预训练的网络结构和参数一起导入（load导入网络的全部信息），下一行load_state_dict将save中的参数单独提出给model
     model.load_state_dict(save['model'])
+
     src_img = cv2.imread(args.image_path)
     img = cv2.cvtColor(src_img,cv2.COLOR_BGR2RGB)
     img_tensor = torch.from_numpy(img/255.).permute(2,0,1).float().cuda()
@@ -61,11 +61,11 @@ def main():
             cv2.putText(src_img, text=name, org=(x1, y1+10), fontFace=cv2.FONT_HERSHEY_SIMPLEX, 
                 fontScale=0.5, thickness=1, lineType=cv2.LINE_AA, color=(0, 0, 255))
 
-    cv2.imshow('result',src_img)   
-    cv2.waitKey()
-    cv2.destroyAllWindows()
+    #cv2.imshow('result',src_img)   
+    #cv2.waitKey()
+    #cv2.destroyAllWindows()
 
-    # cv2.imwrite('assets/11.jpg',img)
+    cv2.imwrite('assets/test1.jpg',src_img)
     
 
 if __name__ == "__main__":
